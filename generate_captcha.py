@@ -8,11 +8,11 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 # abcdefghjkmnpqrstuvwxy
 _letter_cases = "abdefghmnpqrstvwxyz" # 小写字母，去除可能干扰的c i j k l o u v
 _upper_cases = "ABDEFHMNPQRSTWXYZ" # 大写字母，去除可能干扰的C G I J K L O U V 
-_numbers = ''.join(map(str, range(2, 10))) # 数字，去除0，1
+_numbers = ''.join(map(str, list(range(2, 10)))) # 数字，去除0，1
 init_chars = ''.join((_letter_cases, _upper_cases, _numbers))
 fontType = "./luxirb.ttf"
 bg_image = "./background.jpg"
-out_dir = "./mycaptchas"
+out_dir = "/Volumes/Data/captchas"
 
 def create_validate_code(size=(96, 25),
                              chars=init_chars,
@@ -93,8 +93,8 @@ def create_points(draw,point_chance,width,height):
   '''绘制干扰点'''
   chance = min(100, max(0, int(point_chance))) # 大小限制在[0, 100]
   
-  for w in xrange(width):
-    for h in xrange(height):
+  for w in range(width):
+    for h in range(height):
       tmp = random.randint(0, 100)
       if tmp > 100 - chance:
         draw.point((w, h), fill=(0, 0, 0))
@@ -115,9 +115,10 @@ def create_strs(draw,chars,char_length,font_type, font_size,width,height,fg_colo
       start_x = random.randrange(0, width - font_width)
       start_y = random.randrange(0, height - font_height)
     except ValueError as e:
-      print e
-      print strs
-      print width, font_width, height, font_height
+      pass
+      #print(e)
+      #print(strs)
+      #print(width, font_width, height, font_height)
     else:
       flag = True
 
@@ -128,6 +129,6 @@ def create_strs(draw,chars,char_length,font_type, font_size,width,height,fg_colo
 if __name__ == "__main__":
   if not os.path.exists(out_dir):
     os.makedirs(out_dir)
-  for _ in range(500):
+  for _ in range(5000):
     code_img, code_str = create_validate_code()
     code_img.save("%s/%s.jpg" % (out_dir, code_str))
